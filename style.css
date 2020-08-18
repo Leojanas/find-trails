@@ -1,0 +1,16 @@
+h1{
+    text-align: center;
+}
+.group{
+    display: flex;
+    flex-direction: column;
+}
+@media screen and (min-width: 500px){
+    .group{
+        flex-direction: row;
+    }
+}
+.item{
+    justify-content: space-around;
+    margin: 10px;
+}
