@@ -14,3 +14,9 @@ h1{
     justify-content: space-around;
     margin: 10px;
 }
+#state{
+    width: 20px;
+}
+#zip{
+    width: 50px;
+}
