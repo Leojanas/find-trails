@@ -6,7 +6,8 @@ let searchLocation = '';
 let lat = 0;
 let long = 0;
 let loc = '';
-let searchTrails = ''
+let searchTrails = '';
+let results = [];
 
 //function to render the error screen for invalid search
 
@@ -25,8 +26,24 @@ $('#main-form').off('click', '#new-search', clickNewSearch)
 }
 
 //function to render the results page
+function renderResults(results){
+    console.log(results);
+}
 
 //function to remove results that don't meet search terms (they can't all be narrowed down using the API query)
+function parseResults(rawResults){
+    console.log(rawResults.trails[0].length);
+    console.log($('#max-length').val());
+    if ($('#max-length').val()){
+        for(let i=0; i<rawResults.trails.length; i++){
+            if (rawResults.trails[i].length <= $('#max-length').val()){
+                console.log('Inside if statement');
+                results.push(rawResults.trails[i]);
+            }
+        }
+        renderResults(results);
+    } 
+}
 
 //function to access the hiking project API to retrieve results
 function fetchHikingProject(searchTrails){
@@ -34,8 +51,10 @@ function fetchHikingProject(searchTrails){
     .then(response => response.json())
     .then(responseJson => {
         console.log(responseJson);
+        parseResults(responseJson);
     })
     .catch(e => console.log('Error Hiking Project'));
+    
 }
 
 //function to generate the query for the hiking access API based on search terms and coordinates
@@ -44,7 +63,7 @@ function hikingQuery(lat,long){
     const hikingBaseURL = `https://www.hikingproject.com/data/get-trails?lat=${lat}&lon=${long}`;
     searchTrails = hikingBaseURL;
     if($('#distance').val()){
-        searchTrails = searchTrails + `&maxdistance=${$('#distance').val()}`
+        searchTrails = searchTrails + `&maxDistance=${$('#distance').val()}`
     }
     if($('#min-length').val()){
         searchTrails= searchTrails + `&minLength=${$('#min-length').val()}`
