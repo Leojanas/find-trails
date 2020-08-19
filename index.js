@@ -27,17 +27,23 @@ $('#main-form').off('click', '#new-search', clickNewSearch)
 
 //function to render the results page
 function renderResults(results){
-    console.log(results);
+    $('#results').removeClass('hidden');
+    $('#results-list').empty();
+    for(let i=0; i<results.length; i++){
+        $('#results-list').append(`<li><h3>${results[i].name}</h3>
+        <p>${results[i].summary}</p>
+        <p>Total length: ${results[i].length} miles</p>
+        <p>Elevation Gain: ${results[i].ascent} feet</p>
+        <a href=${results[i].url}>More Information</a>
+        </li>`)
+    }
 }
 
 //function to remove results that don't meet search terms (they can't all be narrowed down using the API query)
 function parseResults(rawResults){
-    console.log(rawResults.trails[0].length);
-    console.log($('#max-length').val());
     if ($('#max-length').val()){
         for(let i=0; i<rawResults.trails.length; i++){
             if (rawResults.trails[i].length <= $('#max-length').val()){
-                console.log('Inside if statement');
                 results.push(rawResults.trails[i]);
             }
         }
@@ -59,7 +65,6 @@ function fetchHikingProject(searchTrails){
 
 //function to generate the query for the hiking access API based on search terms and coordinates
 function hikingQuery(lat,long){
-    console.log('hikingQuery ran')
     const hikingBaseURL = `https://www.hikingproject.com/data/get-trails?lat=${lat}&lon=${long}`;
     searchTrails = hikingBaseURL;
     if($('#distance').val()){
@@ -69,7 +74,6 @@ function hikingQuery(lat,long){
         searchTrails= searchTrails + `&minLength=${$('#min-length').val()}`
     }
     searchTrails = searchTrails + `&key=200873164-ce2a4395cd4f81c2c04e802eba112f8d`;
-    console.log(searchTrails);
     fetchHikingProject(searchTrails);
     
     
@@ -170,6 +174,8 @@ function renderSearch(location){
 
 //function to render the detailed info screen
 function renderInfo(){
+    $('#info-screen').removeClass('hidden');
+    $('#info-screen').on('click', '#new-search', clickNewSearch);
 
 }
 //function for what to do on search submission
@@ -180,6 +186,7 @@ function clickSearch(){
 //function for what to do on new search
 function clickNewSearch(){
     event.preventDefault();
+    $('#info-screen').addClass('hidden');
     renderMain();
 }
 
