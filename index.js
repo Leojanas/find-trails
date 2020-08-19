@@ -6,6 +6,7 @@ let searchLocation = '';
 let lat = 0;
 let long = 0;
 let loc = '';
+let searchTrails = ''
 
 //function to render the error screen for invalid search
 
@@ -28,11 +29,31 @@ $('#main-form').off('click', '#new-search', clickNewSearch)
 //function to remove results that don't meet search terms (they can't all be narrowed down using the API query)
 
 //function to access the hiking project API to retrieve results
+function fetchHikingProject(searchTrails){
+    fetch(searchTrails)
+    .then(response => response.json())
+    .then(responseJson => {
+        console.log(responseJson);
+    })
+    .catch(e => console.log('Error Hiking Project'));
+}
 
 //function to generate the query for the hiking access API based on search terms and coordinates
 function hikingQuery(lat,long){
-    console.log(lat);
-    console.log(long);
+    console.log('hikingQuery ran')
+    const hikingBaseURL = `https://www.hikingproject.com/data/get-trails?lat=${lat}&lon=${long}`;
+    searchTrails = hikingBaseURL;
+    if($('#distance').val()){
+        searchTrails = searchTrails + `&maxdistance=${$('#distance').val()}`
+    }
+    if($('#min-length').val()){
+        searchTrails= searchTrails + `&minLength=${$('#min-length').val()}`
+    }
+    searchTrails = searchTrails + `&key=200873164-ce2a4395cd4f81c2c04e802eba112f8d`;
+    console.log(searchTrails);
+    fetchHikingProject(searchTrails);
+    
+    
 }
 
 //function to access the google geocoding API to retrieve coordinates for the search
@@ -56,7 +77,8 @@ function fetchGeocoding(location){
         lat = responseJson.results[0].geometry.location.lat;
         long= responseJson.results[0].geometry.location.lng;
         hikingQuery(lat,long);
-    });
+    })
+    .catch(e => console.log('Error'));
     
 }
 
@@ -141,6 +163,7 @@ function clickNewSearch(){
     event.preventDefault();
     renderMain();
 }
+
 //watchSearch function to listen for search submissions
 function watchSearch(){
 $('#main-form').on('click', '#submit', clickSearch)
