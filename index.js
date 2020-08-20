@@ -34,21 +34,47 @@ function renderResults(results){
         <p>${results[i].summary}</p>
         <p>Total length: ${results[i].length} miles</p>
         <p>Elevation Gain: ${results[i].ascent} feet</p>
-        <a href=${results[i].url}>More Information</a>
+        <a href=${results[i].url} target="_blank">More Information</a>
         </li>`)
     }
 }
 
 //function to remove results that don't meet search terms (they can't all be narrowed down using the API query)
 function parseResults(rawResults){
+    let results1 = [];
+    let results2 = [];
+    let results3 = [];
     if ($('#max-length').val()){
         for(let i=0; i<rawResults.trails.length; i++){
             if (rawResults.trails[i].length <= $('#max-length').val()){
-                results.push(rawResults.trails[i]);
+                results1.push(rawResults.trails[i]);
             }
         }
-        renderResults(results);
+    }else {
+        for(let i=0; i<rawResults.trails.length; i++){
+                results1.push(rawResults.trails[i]);
+            }
+    }
+    if($('#max-climb').val()){
+        for(let i=0; i<results1.length; i++){
+            if (results1[i].ascent <= $('#max-climb').val()){
+                results2.push(results1[i]);
+            }
+        }
+    }else {
+        results2 = results1;
     } 
+    console.log(results2);
+    if($('#min-climb').val()){
+        for(let i=0; i<results2.length; i++){
+            if (results2[i].ascent >= $('#min-climb').val()){
+                results3.push(results2[i]);
+            }
+        }
+    }else{
+        results3 = results2;
+    }
+    renderResults(results3); 
 }
 
 //function to access the hiking project API to retrieve results
@@ -73,7 +99,7 @@ function hikingQuery(lat,long){
     if($('#min-length').val()){
         searchTrails= searchTrails + `&minLength=${$('#min-length').val()}`
     }
-    searchTrails = searchTrails + `&key=200873164-ce2a4395cd4f81c2c04e802eba112f8d`;
+    searchTrails = searchTrails + `&maxResults=${$('#number').val()}&key=200873164-ce2a4395cd4f81c2c04e802eba112f8d`;
     fetchHikingProject(searchTrails);
     
     
@@ -120,6 +146,8 @@ function renderSearch(location){
             <label for="zip">Zip Code:</label>
             <input type="text" id="zip" maxlength="5" placeholder="12345">
             <br>
+            <label for="number">Number of Results</label>
+            <input type="text" id="number" placeholder="10">
             <label for="distance">Maximum distance to trailhead:</label>
             <input type="text" id="distance">
             <br>
@@ -127,6 +155,11 @@ function renderSearch(location){
             <input type="text" id="max-length">
             <label for="min-length">Minimum length of hike:</label>
             <input type="text" id="min-length">
+            <br>
+            <label for="max-climb">Maximum Elevation Gain:</label>
+            <input type="text" id="max-climb">
+            <label for="min-climb">Minimum Elevation Gain:</label>
+            <input type="text" id="min-climb">
             </div>
             <button id="new-search">New Search</button>
             <button id="submit">Search</button>`
@@ -139,6 +172,8 @@ function renderSearch(location){
             <label for="state">State:</label>
             <input type="text" id="state" maxlength="2" placeholder="CA">
             <br>
+            <label for="number">Number of Results</label>
+            <input type="text" id="number" placeholder="10">
             <label for="distance">Maximum distance to trailhead:</label>
             <input type="text" id="distance">
             <br>
@@ -146,6 +181,11 @@ function renderSearch(location){
             <input type="text" id="max-length">
             <label for="min-length">Minimum length of hike:</label>
             <input type="text" id="min-length">
+            <br>
+            <label for="max-climb">Maximum Elevation Gain:</label>
+            <input type="text" id="max-climb">
+            <label for="min-climb">Minimum Elevation Gain:</label>
+            <input type="text" id="min-climb">
             </div>
             <button id="new-search">New Search</button>
             <button id="submit">Search</button>`
@@ -156,6 +196,8 @@ function renderSearch(location){
             <label for="zip">Zip Code:</label>
             <input type="text" id="zip" maxlength="5" placeholder="12345">
             <br>
+            <label for="number">Number of Results</label>
+            <input type="text" id="number" placeholder="10">
             <label for="distance">Maximum distance to trailhead:</label>
             <input type="text" id="distance">
             <br>
@@ -163,6 +205,11 @@ function renderSearch(location){
             <input type="text" id="max-length">
             <label for="min-length">Minimum length of hike:</label>
             <input type="text" id="min-length">
+            <br>
+            <label for="max-climb">Maximum Elevation Gain:</label>
+            <input type="text" id="max-climb">
+            <label for="min-climb">Minimum Elevation Gain:</label>
+            <input type="text" id="min-climb">
             </div>
             <button id="new-search">New Search</button>
             <button id="submit">Search</button>`
@@ -187,6 +234,7 @@ function clickSearch(){
 function clickNewSearch(){
     event.preventDefault();
     $('#info-screen').addClass('hidden');
+    $('#results').addClass('hidden');
     renderMain();
 }
 
