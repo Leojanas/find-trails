@@ -29,20 +29,22 @@ $('#main-form').off('click', '#new-search', clickNewSearch)
     )
 }
 //function to render the map directions for each trail
-/*function renderMaps(results,directions){
+function renderMaps(results,directions){
     for(let i=0; i<results.length; i++){
         let directionsRenderer = new google.maps.DirectionsRenderer();
-        let center = new google.maps.LatLng(40.7068354, -111.8036197);
-        let mapOptions = {
-            zoom: 7,
-            center: center
-        };
-        let map = new google.maps.Map($(`#map0`),mapOptions);
+        //lat = lat.toFixed(5);
+        //console.log(lat);
+        //long = long.toFixed(5);
+        /*let mapOptions = {
+            zoom: 9,
+            center: {lat: $(lat), lng: $(long)}
+        };*/
+        let map = new google.maps.Map(document.getElementById(`map${i}`));
         directionsRenderer.setMap(map);
         directionsRenderer.setDirections(directions[i]);
         console.log('map rendered');
     }
-}*/
+}
 
 //function to render the results page
 function renderResults(results,directions){
@@ -51,6 +53,7 @@ function renderResults(results,directions){
     for(let i=0; i<results.length; i++){
         if(i<numberOfResults){
         $('#results-list').append(`<li><h3>${results[i].name}</h3>
+        <div class="group">
         <div class="item">
         <p>${results[i].summary}</p>
         <p>Total length: ${results[i].length} miles</p>
@@ -58,16 +61,17 @@ function renderResults(results,directions){
         <p>Driving Distance to Trailhead: ${directions[i].routes[0].legs[0].distance.text} </p>
         <a href=${results[i].url} target="_blank">More Information</a>
         </div>
-        <div class="item" id="map${i}">
+        <div class="item map" id="map${i}">
         <p>Map Here</p>
+        </div>
         </div>
         </li>`)
         }else{
-            results = results.slice(0,(numberOfResults-1));
-            directions = directions.slice(0, (numberOfResults-1));
+            results = results.slice(0,(numberOfResults));
+            directions = directions.slice(0, (numberOfResults));
         }
     }
-    //renderMaps(results,directions);
+    renderMaps(results,directions);
 }
 //function to remove long drive distances
 function removeLongDrives(results, directions){
