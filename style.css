@@ -30,6 +30,9 @@ h1{
     display: none;
 }
 .map{
-    height: 200px;
-    width: 200px;
+    height: 250px;
+    width: 250px;
+}
+label{
+    padding: 10px, 0px;
 }

@@ -13,7 +13,7 @@ let finalResults = [];
 let finalDirections = [];
 let distance = 0;
 let numberOfResults = 10;
-//function to render the error screen for invalid search
+
 
 //function to render the main page on a 'New Search' click
 function renderMain(){
@@ -28,21 +28,14 @@ $('#main-form').off('click', '#new-search', clickNewSearch)
     <button id="info">More Info</button>`
     )
 }
+
 //function to render the map directions for each trail
 function renderMaps(results,directions){
     for(let i=0; i<results.length; i++){
         let directionsRenderer = new google.maps.DirectionsRenderer();
-        //lat = lat.toFixed(5);
-        //console.log(lat);
-        //long = long.toFixed(5);
-        /*let mapOptions = {
-            zoom: 9,
-            center: {lat: $(lat), lng: $(long)}
-        };*/
         let map = new google.maps.Map(document.getElementById(`map${i}`));
         directionsRenderer.setMap(map);
         directionsRenderer.setDirections(directions[i]);
-        console.log('map rendered');
     }
 }
 
@@ -50,6 +43,13 @@ function renderMaps(results,directions){
 function renderResults(results,directions){
     $('#results').removeClass('hidden');
     $('#results-list').empty();
+    if (results.length == 0){
+        $('#results-list').append(`
+        <li>
+        <p>No results found, please widen your search criteria and try again.</p>
+        </li>
+        `);
+    }
     for(let i=0; i<results.length; i++){
         if(i<numberOfResults){
         $('#results-list').append(`<li><h3>${results[i].name}</h3>
@@ -75,7 +75,6 @@ function renderResults(results,directions){
 }
 //function to remove long drive distances
 function removeLongDrives(results, directions){
-    console.log('removeLongDrives ran')
     finalResults = [];
     finalDirections = [];
     for(let i=0; i<results.length; i++){
@@ -84,21 +83,17 @@ function removeLongDrives(results, directions){
             finalDirections.push(directions[i]);
         }
     }
-    console.log(finalResults);
-    console.log(finalDirections);
     renderResults(finalResults, finalDirections);
 }
 
 //function to get driving distance to trailhead
 function fetchDrivingDirections(results){
-    console.log('fetchDrivingDirections ran');
     directions = [];
    let directionsService = new google.maps.DirectionsService();
    callDirections(0, results, 0);
    }
    
    function callDirections(i,results, wait){
-        console.log('callDirections began');
         let start = `${lat},${long}`;
         let end = `${results[i].latitude},${results[i].longitude}`
         let directionsService = new google.maps.DirectionsService();
@@ -111,20 +106,17 @@ function fetchDrivingDirections(results){
         directionsService.route(request, function(routeResult, status){
             if( status == 'OK'){
                     directions.push(routeResult);
-                    console.log('directions ran')
                     if((i+1)<results.length){
                         setTimeout( ()=>{
-                            callDirections(i+1, results, 0);
+                            callDirections(i+1, results, 100);
                         }, wait);
                     }else{
-                    removeLongDrives(results,directions)                    }
+                    removeLongDrives(results,directions);                    
+                    }
                 }else if(status == 'OVER_QUERY_LIMIT'){
-                    console.log(status);
                     setTimeout( ()=> {
-                       callDirections(i, results, 200);
-                    }, 500);
-                }else{
-                    console.log('other response');
+                       callDirections(i, results, 300);
+                    }, 800);
                 }
         })
     }
@@ -174,7 +166,7 @@ function fetchHikingProject(searchTrails){
         console.log(responseJson);
         parseResults(responseJson);
     })
-    .catch(e => console.log('Error Hiking Project' + e));
+    .catch(e => console.log('Error from the hiking project:' + e));
     
 }
 
@@ -216,7 +208,7 @@ function fetchGeocoding(location){
         long = responseJson.results[0].geometry.location.lng;
         hikingQuery(lat,long);
     })
-    .catch(e => console.log('Error'));
+    .catch(e => console.log('Error from geocoding:'+ e));
     
 }
 
@@ -277,7 +269,7 @@ function renderSearch(location){
             <input type="text" id="number" placeholder="10">
             <br>
             <label for="distance">Maximum distance to trailhead:</label>
-            <input type="text" id="distance width="60px">
+            <input type="text" id="distance" width="60px">
             <label for="distance">miles</label>
             <br>
             <label for="max-length">Maximum length of hike:</label>
@@ -351,6 +343,12 @@ function clickSearch(){
     distance = $('#distance').val();
     numberOfResults = $('#number').val();
     $('#results-list').empty();
+    $('#results').removeClass('hidden');
+    $('#results-list').append(
+        `<li>
+        <p>Searching for Results...</p></li>
+        `
+    );
     fetchGeocoding(loc);
 }
 //function for what to do on new search
