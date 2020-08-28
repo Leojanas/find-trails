@@ -20,6 +20,12 @@ h1{
 #zip{
     width: 50px;
 }
+#number{
+    width: 30px;
+}
+#distance,#max-length,#min-length,#max-climb,#min-climb{
+    width: 60px;
+}
 .hidden{
     display: none;
 }

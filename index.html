@@ -13,6 +13,7 @@
     <section>
         <form id="main-form">
             <div class="group">
+                <p>Search for trails by:</p>
                 <button class="item" id="select-address">Full Address</button>
                 <button class="item" id="select-city">City</button>
                 <button class="item" id="select-zip">Zip Code</button>
@@ -31,9 +32,13 @@
         <p>Choose the option that you want to search by: Full Address, City, or Zip Code. </p>
         <p>This will take you to the search screen, where you can input the location you have selected as well 
             as other search parameters.  If you want to change your search, you can always press the 
-            'New Search' button to return to this screen and start again.
+            'Start Over' button to return to the home screen and start again.
         </p>
-        <button id="new-search">New Search</button>
+        <p>On the search screen, the location fields at the top are required.  If you do not have all the info,
+            please press 'Start Over' and choose a different search method.  The remaining search fields are all
+            optional, use as few or as many as you would like to narrow your search.
+        </p>
+        <button id="new-search">Start Over</button>
     </section>
     <footer>
         <p>This app uses data from The Hiking Project.</p>
@@ -41,5 +46,8 @@
   
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src="index.js"></script>
+    <script defer
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvS2cO3sDJcmoHQn0h46ITWIlhczMMsU4">
+</script>
 </body>
 </html>
