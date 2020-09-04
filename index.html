@@ -10,15 +10,17 @@
     <header>
         <h1>Search for Trails Near You</h1>
     </header>
-    <section>
+    <section id="input">
         <form id="main-form">
-            <div class="group">
-                <p>Search for trails by:</p>
-                <button class="item" id="select-address">Full Address</button>
-                <button class="item" id="select-city">City</button>
-                <button class="item" id="select-zip">Zip Code</button>
+            <h3>Search for trails by:</h3>
+            <div class="container">
+                <button class="item search" id="select-address">Full Address</button>
+                <button class="item search" id="select-city">City</button>
+                <button class="item search" id="select-zip">Zip Code</button>
             </div>
-            <button id="info">More Info</button>
+            <div class="container">
+                <button id="help" class="item">Help</button>
+            </div>
         </form>    
     </section>
     <section id="results" class="hidden">
@@ -26,6 +28,10 @@
         <ul id="results-list">
 
         </ul>
+    </section>
+    <section id="error" class="hidden">
+        <h3>Incomplete search address! Please fill in all required fields and try again. If any required fields are unknown, please try a different search method.</h3>
+
     </section>
     <section id="info-screen" class="hidden">
         <h2>How it Works</h2>
@@ -38,10 +44,9 @@
             please press 'Start Over' and choose a different search method.  The remaining search fields are all
             optional, use as few or as many as you would like to narrow your search.
         </p>
-        <button id="new-search">Start Over</button>
     </section>
     <footer>
-        <p>This app uses data from The Hiking Project.</p>
+        <p>This app uses data from The Hiking Project and Google Maps.</p>
     </footer>
   
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>

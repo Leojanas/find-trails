@@ -1,38 +1,163 @@
-h1{
+h1,h2,h3{
     text-align: center;
 }
-.group{
+h2{
+    background-color: #2a4d14;
+    color: #aff9c9;
+}
+.container{
     display: flex;
     flex-direction: column;
-}
-@media screen and (min-width: 500px){
-    .group{
-        flex-direction: row;
-    }
+    margin: 0 auto;
+    justify-content: center;
+    align-items: center;
 }
 .item{
-    justify-content: space-around;
-    margin: 10px;
+    margin: 0 5px;
+}
+.bottom{
+    margin: 10px 0 0 0;
+}
+.search{
+    width: 120px;
+}
+img{
+    margin: 0 auto;
+}
+.large{
+    flex: 2 1 0;
+}
+#city{
+    width: 100px;
 }
 #state{
     width: 20px;
 }
 #zip{
-    width: 50px;
+    width: 40px;
+}
+#address{
+    width: 90%;
+}
+legend{
+    font-size: 18px;
+    font-weight: bold;
 }
 #number{
     width: 30px;
 }
+input[type = "text"]{
+    background-color: #7cf0bd;
+    margin: 0 0 10px 0;
+}
+h3{
+    padding: 0 0 10px 0;
+    margin: 0px;
+}
 #distance,#max-length,#min-length,#max-climb,#min-climb{
     width: 60px;
+}
+#help{
+    margin: 20px auto 0 auto;
+    justify-self: center;
 }
 .hidden{
     display: none;
 }
-.map{
-    height: 250px;
-    width: 250px;
+.center{
+    margin: 0 auto;
 }
-label{
-    padding: 10px, 0px;
+.map{
+    height: 200px;
+    padding: 10px;
+    flex-basis: 200px;
+    align-self: stretch;
+}
+ul{
+    list-style-type: none;
+    margin: 0 auto;
+}
+section{
+    margin: 0 auto;
+}
+li{
+    margin: 0 0;
+}
+#results{
+    background-color: #7cf0bd;
+}
+form{
+    padding: 15px;
+    border: solid #2a4d14 3px;
+    margin: 0px auto;
+    border-radius: 50px;
+    background-color: #317b22;
+    color: #7cf0bd;
+    width: 70%;
+}
+button{
+    margin: 20px 0px;
+    padding: 5px 10px;
+    border-radius: 10px;
+    border: solid #2a4d14 2px;
+    background-color: #7cf0bd;
+}
+header{
+    background-color: #7cf0bd;
+    color: #2a4d14;
+    margin: 0px;
+}
+body{
+    background-color: #aff9c9;
+    margin: 0px;
+}
+.lines{
+    display: block;
+}
+.left-label{
+    display: block;
+    text-align: left;
+    width: 140px;
+}
+footer{
+    text-align: center;
+    width: 100%;
+    bottom: 0px;
+    color: #2a4d14;
+}
+#info-screen{
+    padding: 20px;
+    color: #2a4d14;
+
+}
+fieldset{
+    margin: 0px;
+}
+.desktop{
+    display: none;
+}
+@media (min-width: 750px){
+    .desktop{
+        display: block;
+    }
+}
+@media (min-width: 500px){
+    .container{
+        flex-direction: row;
+    }
+    #help{
+        flex-basis: 80px;
+    }
+    form{
+        margin: 0 auto;
+        width: 360px;
+    }
+    .left-label{
+        display: inline-block;
+        text-align: right;
+        width: 205px;
+    }
+    .lines{
+        display: inline-block;
+    }
 }
