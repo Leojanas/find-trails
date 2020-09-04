@@ -121,14 +121,14 @@ function fetchDrivingDirections(results){
                     directions.push(routeResult);
                     if((i+1)<results.length){
                         setTimeout( ()=>{
-                            callDirections(i+1, results, 100);
+                            callDirections(i+1, results, 150);
                         }, wait);
                     }else{
                     removeLongDrives(results,directions);                    
                     }
                 }else if(status == 'OVER_QUERY_LIMIT'){
                     setTimeout( ()=> {
-                       callDirections(i, results, 250);
+                       callDirections(i, results, 200);
                     }, 600);
                 }
         })
@@ -193,7 +193,7 @@ function hikingQuery(lat,long){
     if($('#min-length').val()){
         searchTrails= searchTrails + `&minLength=${$('#min-length').val()}`
     }
-    searchTrails = searchTrails + `&maxResults=${parseInt($('#number').val())+10}&key=200873164-ce2a4395cd4f81c2c04e802eba112f8d`;
+    searchTrails = searchTrails + `&maxResults=${parseInt($('#number').val())+20}&key=200873164-ce2a4395cd4f81c2c04e802eba112f8d`;
     fetchHikingProject(searchTrails);
     
     
