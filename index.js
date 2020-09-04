@@ -68,9 +68,9 @@ function renderResults(results,directions){
                 <div class="item description large">
                     <h3>${results[i].name}</h3>
                     <p>${results[i].summary}</p>
-                    <p>Total length: ${results[i].length} miles</p>
-                    <p>Elevation Gain: ${results[i].ascent} feet</p>
-                    <p>Driving Distance to Trailhead: ${directions[i].routes[0].legs[0].distance.text} </p>
+                    <p><b>Total length:</b> ${results[i].length} miles</p>
+                    <p><b>Elevation Gain:</b> ${results[i].ascent} feet</p>
+                    <p><b>Driving Distance to Trailhead:</b> ${directions[i].routes[0].legs[0].distance.text} </p>
                     <a href=${results[i].url} target="_blank">More Information</a>
                 </div>
                 <br>
