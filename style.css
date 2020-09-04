@@ -140,6 +140,7 @@ fieldset{
 @media (min-width: 750px){
     .desktop{
         display: block;
+        flex-basis: 250px;
     }
 }
 @media (min-width: 500px){

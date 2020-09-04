@@ -62,7 +62,7 @@ function renderResults(results,directions){
         <li>
             <div class="container">
                 <div class="item desktop">
-                    <img src="${results[i].imgSmall}" alt="Picture of ${results[i].name}" >
+                    <img src="${results[i].imgSmall}" alt="No picture available" >
                     <p>${results[i].name}</p>
                 </div>
                 <div class="item description large">
