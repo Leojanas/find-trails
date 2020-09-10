@@ -7,5 +7,8 @@ It allows searching by an exact address, a city/state, or by zip code.  It also 
 minimum and maximum elevation gain on the hike. <p>
 <h2>Screenshots</h2>
 Home Screen
-<img alt="Home Screen" src="https://github.com/Leojanas/find-trails/screenshots/screenshot-home.PNG">
-![Home Screen](screenshots/screenshot-home.PNG)
+![Home Screen](tree/master/screenshots/screenshot-home.PNG)
+Results Screen
+![Results Screen](tree/master/screenshots/screenshot-results.PNG)
+Search Screen
+![Search Screen](tree/master/screenshots/screenshot-search.PNG)
