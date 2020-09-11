@@ -1,3 +1,4 @@
+/*This is the css styling for the find trails app.  Written by Leo Janas. */
 h1,h2,h3{
     text-align: center;
 }
@@ -65,9 +66,6 @@ h3{
 }
 .hidden{
     display: none;
-}
-.center{
-    margin: 0 auto;
 }
 .map{
     height: 200px;
