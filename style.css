@@ -1,4 +1,8 @@
 /*This is the css styling for the find trails app.  Written by Leo Janas. */
+body{
+    background-color: #aff9c9;
+    margin: 0px;
+}
 h1,h2,h3{
     text-align: center;
 }
@@ -6,72 +10,18 @@ h2{
     background-color: #2a4d14;
     color: #aff9c9;
 }
-.container{
-    display: flex;
-    flex-direction: column;
-    margin: 0 auto;
-    justify-content: center;
-    align-items: center;
-}
-.item{
-    margin: 0 5px;
-}
-.bottom{
-    margin: 10px 0 0 0;
-}
-.search{
-    width: 120px;
+h3{
+    padding: 0 0 10px 0;
+    margin: 0px;
 }
 img{
     margin: 0 auto;
     max-width: 100%;
     height: auto;
 }
-.large{
-    flex: 2 1 0;
-}
-#city{
-    width: 100px;
-}
-#state{
-    width: 20px;
-}
-#zip{
-    width: 40px;
-}
-#address{
-    width: 90%;
-}
 legend{
     font-size: 18px;
     font-weight: bold;
-}
-#number{
-    width: 30px;
-}
-input[type = "text"]{
-    background-color: #7cf0bd;
-    margin: 0 0 10px 0;
-}
-h3{
-    padding: 0 0 10px 0;
-    margin: 0px;
-}
-#distance,#max-length,#min-length,#max-climb,#min-climb{
-    width: 60px;
-}
-#help{
-    margin: 20px auto 0 auto;
-    justify-self: center;
-}
-.hidden{
-    display: none;
-}
-.map{
-    height: 200px;
-    padding: 10px;
-    flex-basis: 200px;
-    align-self: stretch;
 }
 ul{
     list-style-type: none;
@@ -84,8 +34,9 @@ section{
 li{
     margin: 0 0;
 }
-#results{
+input[type = "text"]{
     background-color: #7cf0bd;
+    margin: 0 0 10px 0;
 }
 form{
     padding: 15px;
@@ -108,9 +59,67 @@ header{
     color: #2a4d14;
     margin: 0px;
 }
-body{
-    background-color: #aff9c9;
+footer{
+    text-align: center;
+    width: 100%;
+    bottom: 0px;
+    color: #2a4d14;
+}
+fieldset{
     margin: 0px;
+}
+.container{
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    justify-content: center;
+    align-items: center;
+}
+.item{
+    margin: 0 5px;
+}
+.bottom{
+    margin: 10px 0 0 0;
+}
+.search{
+    width: 120px;
+}
+.large{
+    flex: 2 1 0;
+}
+#city{
+    width: 100px;
+}
+#state{
+    width: 20px;
+}
+#zip{
+    width: 40px;
+}
+#address{
+    width: 90%;
+}
+#number{
+    width: 30px;
+}
+#distance,#max-length,#min-length,#max-climb,#min-climb{
+    width: 60px;
+}
+#help{
+    margin: 20px auto 0 auto;
+    justify-self: center;
+}
+.hidden{
+    display: none;
+}
+.map{
+    height: 200px;
+    padding: 10px;
+    flex-basis: 200px;
+    align-self: stretch;
+}
+#results{
+    background-color: #7cf0bd;
 }
 .lines{
     display: block;
@@ -120,19 +129,10 @@ body{
     text-align: left;
     width: 140px;
 }
-footer{
-    text-align: center;
-    width: 100%;
-    bottom: 0px;
-    color: #2a4d14;
-}
 #info-screen{
     padding: 20px;
     color: #2a4d14;
 
-}
-fieldset{
-    margin: 0px;
 }
 .desktop{
     display: none;
