@@ -3,10 +3,7 @@
 "use strict";
 
 let submission = {};
-let lat = 0;
-let long = 0;
 let directions = [];
-
 
 //function to render the main page on a 'Start Over' click
 function generateMain(){
@@ -99,7 +96,7 @@ function fetchDrivingDirections(results, submission){
 
 //function to retrieve directions data   
 function callDirections(i,results, wait){
-    let start = `${lat},${long}`;
+    let start = `${submission.lat},${submission.long}`;
     let end = `${results[i].latitude},${results[i].longitude}`
     let directionsService = new google.maps.DirectionsService();
     let request = {
@@ -178,8 +175,8 @@ function fetchHikingProject(searchTrails){
 }
 
 //function to generate the query for the hiking access API based on search terms and coordinates
-function hikingQuery(lat,long){
-    const hikingBaseURL = `https://www.hikingproject.com/data/get-trails?lat=${lat}&lon=${long}`;
+function hikingQuery(){
+    const hikingBaseURL = `https://www.hikingproject.com/data/get-trails?lat=${submission.lat}&lon=${submission.long}`;
     let searchTrails = hikingBaseURL;
     if(submission.distance){
         searchTrails = searchTrails + `&maxDistance=${submission.distance}`
@@ -210,9 +207,9 @@ function fetchGeocoding(submission){
     fetch(mapsURL)
     .then(response => response.json())
     .then(responseJson => {
-        lat = responseJson.results[0].geometry.location.lat;
-        long = responseJson.results[0].geometry.location.lng;
-        hikingQuery(lat,long);
+        submission.lat = responseJson.results[0].geometry.location.lat;
+        submission.long = responseJson.results[0].geometry.location.lng;
+        hikingQuery();
     })
     .catch(e => renderErrorScreen('Error from geocoding:'+ e));
 }
