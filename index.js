@@ -5,23 +5,26 @@
 let submission = {};
 let lat = 0;
 let long = 0;
-let loc = '';
 let directions = [];
 
 
-//function to render the main page on a 'New Search' click
-function renderMain(){
-    $('#main-form').off('click', '#submit', clickSearch)
-    $('#main-form').off('click', '#new-search', clickNewSearch)
-    $('#main-form').html(
-        `<div class="container">
+//function to render the main page on a 'Start Over' click
+function generateMain(){
+    return  `<div class="container">
         <button class="item" id="select-address">Full Address</button>
         <button class="item" id="select-city">City</button>
         <button class="item" id="select-zip">Zip Code</button>
         </div>
         <div class="container">
         <button id="help">Help</button>
-        </div>`)
+        </div>`;
+}
+
+//function to display the main page on a 'Start Over' click
+function renderMain(html){
+    $('#main-form').off('click', '#submit', clickSearch)
+    $('#main-form').off('click', '#new-search', clickNewSearch)
+    $('#main-form').html(generateMain());
 }
 
 //function to render the map directions for each trail
@@ -34,40 +37,38 @@ function renderMaps(results,directions){
     }
 }
 
+//function to generate result list item html
+function generateResult(result, direction, i){
+    return `
+    <li>
+        <div class="container">
+            <div class="item desktop">
+                <img src="${result.imgSmall}" alt="No picture available" >
+                <p>${result.name}</p>
+            </div>
+            <div class="item description large">
+                <h3>${result.name}</h3>
+                <p>${result.summary}</p>
+                <p><b>Total length:</b> ${result.length} miles</p>
+                <p><b>Elevation Gain:</b> ${result.ascent} feet</p>
+                <p><b>Driving Distance to Trailhead:</b> ${direction.routes[0].legs[0].distance.text} </p>
+                <a href=${result.url} target="_blank">More Information</a>
+            </div>
+            <br>
+            <div class="item map" id="map${i}">
+            </div>
+        </div>
+        <hr>
+    </li>`
+}
+
 //function to render the results page
 function renderResults(results,directions){
     $('#results').removeClass('hidden');
     $('#results-list').empty();
-    if (results.length == 0){
-        $('#results-list').append(`
-        <li>
-        <p>No results found, please widen your search criteria and try again.</p>
-        </li>
-        `);
-    }
     for(let i=0; i<results.length; i++){
         if(i<submission.numberOfResults){
-            $('#results-list').append(`
-            <li>
-                <div class="container">
-                    <div class="item desktop">
-                        <img src="${results[i].imgSmall}" alt="No picture available" >
-                        <p>${results[i].name}</p>
-                    </div>
-                    <div class="item description large">
-                        <h3>${results[i].name}</h3>
-                        <p>${results[i].summary}</p>
-                        <p><b>Total length:</b> ${results[i].length} miles</p>
-                        <p><b>Elevation Gain:</b> ${results[i].ascent} feet</p>
-                        <p><b>Driving Distance to Trailhead:</b> ${directions[i].routes[0].legs[0].distance.text} </p>
-                        <a href=${results[i].url} target="_blank">More Information</a>
-                    </div>
-                    <br>
-                    <div class="item map" id="map${i}">
-                    </div>
-                </div>
-            </li>
-            <hr>`)
+            $('#results-list').append(generateResult(results[i], directions[i], i));
         }else{
             results = results.slice(0,(submission.numberOfResults));
             directions = directions.slice(0, (submission.numberOfResults));
@@ -159,7 +160,11 @@ function parseResults(rawResults){
     }else{
         results3 = results2;
     }
-    fetchDrivingDirections(results3); 
+    if(results3.length == 0){
+        renderErrorScreen('No results found. Please increase number of results or broaden search parameters and try again.');
+    }else{
+        fetchDrivingDirections(results3);
+    } 
 }
 
 //function to access the hiking project API to retrieve results
@@ -187,17 +192,17 @@ function hikingQuery(lat,long){
 }
 
 //function to access the google geocoding API to retrieve coordinates for the search
-function fetchGeocoding(location){
+function fetchGeocoding(submission){
     let string = '';
     let searchLocation = '';
     const mapsBaseUrl = 'https://maps.googleapis.com/maps/api/geocode/json?';
-    if (location === 'address'){
+    if (submission.location === 'address'){
         let string = submission.address +' '+ submission.city +' '+ submission.state +' '+ submission.zip;
         searchLocation = encodeURIComponent(string);
-    }else  if (location === 'city'){
+    }else  if (submission.location === 'city'){
         let string = submission.city +' '+ submission.state;
         searchLocation = encodeURIComponent(string);
-    }else  if (location === 'zip'){
+    }else  if (submission.location === 'zip'){
         let string = submission.zip;
         searchLocation = encodeURIComponent(string);
     }
@@ -211,139 +216,96 @@ function fetchGeocoding(location){
     })
     .catch(e => renderErrorScreen('Error from geocoding:'+ e));
 }
+//function to generate optional fields (this part of the form is used for every search type)
+function generateOptionalFields(){
+return `<br>
+<fieldset>
+    <legend>Optional Fields:</legend>
+    <label class="left-label" for="number">Number of Results:</label>
+    <input type="number" id="number" placeholder="10" min="0" max="50" value="10">
+    <br>
+    <label class="left-label" for="distance">Maximum distance to trailhead:</label>
+    <input type="number" id="distance" value="20" min="0" max="50" placeholder="20">
+    <label for="distance">miles</label>
+    <br>
+    <label class="left-label" for="max-length">Maximum length of hike:</label>
+    <input type="number" id="max-length" min="0" max="100">
+    <label for="max-length">miles</label>
+    <br>
+    <label class="left-label" for="min-length">Minimum length of hike:</label>
+    <input type="number" id="min-length" min="0" max="100">
+    <label for="min-length">miles</label>
+    <br>
+    <label class="left-label" for="max-climb">Maximum Elevation Gain:</label>
+    <input type="number" id="max-climb" min="0" max="10000">
+    <label for="max-climb">feet</label>
+    <br>
+    <label class="left-label" for="min-climb">Minimum Elevation Gain:</label>
+    <input type="number" id="min-climb" min="0" max="10000">
+    <label for="min-climb">feet</label>
+</fieldset>
+<div class="container bottom">
+    <button class="item" id="submit" type="submit">Search</button>
+    <button class="item" id="new-search">Start Over</button>
+</div>`
+}
+
+//function to generate address search
+function generateAddressSearch(){
+    return `
+    <fieldset>
+        <legend>Required Fields:</legend>
+        <label for="address">Street Address:</label>
+        <input type="text" id="address" required>
+        <br>
+        <label for="city">City:</label>
+        <input type="text" id="city" required>
+        <div class="lines">
+            <label for="state">State:</label>
+            <input type="text" id="state" maxlength="2" required>
+            <label for="zip">Zip:</label>
+            <input type="number" id="zip" min= "0" placeholder="12345" required>
+        </div>
+    </fieldset>
+    `
+}
+
+//function to generate city search
+function generateCitySearch(){
+return `
+<fieldset>
+    <legend>Required Fields:</legend>
+    <label for="city">City:</label>
+    <input type="text" id="city" required>
+    <div class="lines">
+        <label for="state">State:</label>
+        <input type="text" id="state" maxlength="2" required>
+    </div>
+</fieldset>`
+}
+
+//function to generate zip code search
+function generateZipSearch(){
+    return `<fieldset>
+    <legend>Required Fields:</legend>
+    <label for="zip">Zip Code:</label>
+    <input type="number" id="zip" min= "0" placeholder="12345" required>
+    <br>
+</fieldset>`
+}
 
 //function to render the search screen based on the type of search chosen
-function renderSearch(location){
-    if (location === 'address'){
-        $('#main-form').html(`
-            <fieldset>
-                <legend>Required Fields:</legend>
-                <label for="address">Street Address:</label>
-                <input type="text" id="address" required>
-                <br>
-                <label for="city">City:</label>
-                <input type="text" id="city" required>
-                <div class="lines">
-                    <label for="state">State:</label>
-                    <input type="text" id="state" maxlength="2" required>
-                    <label for="zip">Zip:</label>
-                    <input type="number" id="zip" maxlength="5" min= "0" placeholder="12345" required>
-                </div>
-            </fieldset>
-            <br>
-            <fieldset>
-                <legend>Optional Fields:</legend>
-                <label class="left-label" for="number">Number of Results:</label>
-                <input type="number" id="number" placeholder="10" min="0" max="50" value="10">
-                <br>
-                <label class="left-label" for="distance">Maximum distance to trailhead:</label>
-                <input type="number" id="distance" width="60px" value="20" min="0" max="50" placeholder="20">
-                <label for="distance">miles</label>
-                <br>
-                <label class="left-label" for="max-length">Maximum length of hike:</label>
-                <input type="number" id="max-length" width="60px" min="0" max="100">
-                <label for="max-length">miles</label>
-                <br>
-                <label class="left-label" for="min-length">Minimum length of hike:</label>
-                <input type="number" id="min-length" width="60px" min="0" max="100">
-                <label for="min-length">miles</label>
-                <br>
-                <label class="left-label" for="max-climb">Maximum Elevation Gain:</label>
-                <input type="number" id="max-climb" width="60px" min="0" max="10000">
-                <label for="max-climb">feet</label>
-                <br>
-                <label class="left-label" for="min-climb">Minimum Elevation Gain:</label>
-                <input type="number" id="min-climb" width="60px" min="0" max="10000">
-                <label for="min-climb">feet</label>
-            </fieldset>
-            <div class="container bottom">
-                <button class="item" id="submit" type="submit">Search</button>
-                <button class="item" id="new-search">Start Over</button>
-            </div>`
-        )
-    }else if(location === 'city'){
-        $('#main-form').html(`
-            <fieldset>
-                <legend>Required Fields:</legend>
-                <label for="city">City:</label>
-                <input type="text" id="city" required>
-                <div class="lines">
-                    <label for="state">State:</label>
-                    <input type="text" id="state" maxlength="2" required>
-                </div>
-            </fieldset>
-            <br>
-            <fieldset>
-            <legend>Optional Fields:</legend>
-            <label class="left-label" for="number">Number of Results:</label>
-            <input type="number" id="number" placeholder="10" min="0" max="50" value="10">
-            <br>
-            <label class="left-label" for="distance">Maximum distance to trailhead:</label>
-            <input type="number" id="distance" width="60px" value="20" min="0" max="50" placeholder="20">
-            <label for="distance">miles</label>
-            <br>
-            <label class="left-label" for="max-length">Maximum length of hike:</label>
-            <input type="number" id="max-length" width="60px" min="0" max="100">
-            <label for="max-length">miles</label>
-            <br>
-            <label class="left-label" for="min-length">Minimum length of hike:</label>
-            <input type="number" id="min-length" width="60px" min="0" max="100">
-            <label for="min-length">miles</label>
-            <br>
-            <label class="left-label" for="max-climb">Maximum Elevation Gain:</label>
-            <input type="number" id="max-climb" width="60px" min="0" max="10000">
-            <label for="max-climb">feet</label>
-            <br>
-            <label class="left-label" for="min-climb">Minimum Elevation Gain:</label>
-            <input type="number" id="min-climb" width="60px" min="0" max="10000">
-            <label for="min-climb">feet</label>
-            </fieldset>
-            <div class="container bottom">
-                <button class="item" id="submit" type="submit">Search</button>
-                <button class="item" id="new-search">Start Over</button>
-            </div>`
-        )
-    }else if(location === 'zip'){
-        $('#main-form').html(`
-            <fieldset>
-                <legend>Required Fields:</legend>
-                <label for="zip">Zip Code:</label>
-                <input type="number" id="zip" maxlength="5" min= "0" placeholder="12345" required>
-                <br>
-            </fieldset>
-            <br>
-            <fieldset>
-            <legend>Optional Fields:</legend>
-            <label class="left-label" for="number">Number of Results:</label>
-            <input type="number" id="number" placeholder="10" min="0" max="50" value="10">
-            <br>
-            <label class="left-label" for="distance">Maximum distance to trailhead:</label>
-            <input type="number" id="distance" width="60px" value="20" min="0" max="50" placeholder="20">
-            <label for="distance">miles</label>
-            <br>
-            <label class="left-label" for="max-length">Maximum length of hike:</label>
-            <input type="number" id="max-length" width="60px" min="0" max="100">
-            <label for="max-length">miles</label>
-            <br>
-            <label class="left-label" for="min-length">Minimum length of hike:</label>
-            <input type="number" id="min-length" width="60px" min="0" max="100">
-            <label for="min-length">miles</label>
-            <br>
-            <label class="left-label" for="max-climb">Maximum Elevation Gain:</label>
-            <input type="number" id="max-climb" width="60px" min="0" max="10000">
-            <label for="max-climb">feet</label>
-            <br>
-            <label class="left-label" for="min-climb">Minimum Elevation Gain:</label>
-            <input type="number" id="min-climb" width="60px" min="0" max="10000">
-            <label for="min-climb">feet</label>
-            </fieldset>
-            <div class="container bottom">
-                <button class="item" id="submit" type="submit">Search</button>
-                <button class="item" id="new-search">Start Over</button>
-            </div>`
-        )
+function renderSearch(){
+    if (submission.location === 'address'){
+        $('#main-form').html(generateAddressSearch());
+        $('#main-form').append(generateOptionalFields());
+    }else if(submission.location === 'city'){
+        $('#main-form').html(generateCitySearch());
+        $('main-form').append(generateOptionalFields());
+    }else if(submission.location === 'zip'){
+        $('#main-form').html(generateZipSearch());
+        $('#main-form').append(generateOptionalFields());
     }
-    loc = location;
     watchSearch();
 }
 
@@ -365,7 +327,11 @@ function renderErrorScreen(message){
 function checkForErrors(submission){
     if((parseInt(submission.numberOfResults) < 0)|(parseInt(submission.distance) < 0)|(parseInt(submission.maxLength) < 0)|(parseInt(submission.minLength) < 0)|(parseInt(submission.maxClimb) < 0)|(parseInt(submission.minClimb) < 0)){
         renderErrorScreen('You cannot enter negative numbers.');
-    }else if(loc == 'address'){
+    }else if(parseInt(submission.minLength) > parseInt(submission.maxLength)){
+        renderErrorScreen('Invalid Search: Maximum length is smaller than minimum length.')
+    }else if(parseInt(submission.minClimb) > parseInt(submission.maxClimb)){
+        renderErrorScreen('Invalid Search: Maximum elevation gain is smaller than minimum elevation gain.')
+    }else if(submission.location == 'address'){
         if((submission.address == "")||(submission.city == "")||(submission.state == "")||(submission.zip == "")){
             renderErrorScreen('Please fill out all required address fields.');
         }else{
@@ -376,9 +342,9 @@ function checkForErrors(submission){
                 <p>Searching for Results...</p></li>
                 `
             );
-            fetchGeocoding(loc, submission);
+            fetchGeocoding(submission);
         } 
-    }else  if(loc == 'city'){
+    }else  if(submission.location == 'city'){
         if((submission.city == "")||(submission.state == "")){
             renderErrorScreen('Please fill out all required fields.');
         }else{
@@ -389,9 +355,9 @@ function checkForErrors(submission){
                 <p>Searching for Results...</p></li>
                 `
             );
-            fetchGeocoding(loc, submission);
+            fetchGeocoding(submission);
         } 
-    }else  if(loc == 'zip'){
+    }else  if(submission.location == 'zip'){
         if(submission.zip == ""){
             renderErrorScreen('Please provide a valid zip code.');
         }else{
@@ -402,7 +368,7 @@ function checkForErrors(submission){
                 <p>Searching for Results...</p></li>
                 `
             );
-            fetchGeocoding(loc, submission);
+            fetchGeocoding(submission);
         } 
     } 
 }
@@ -410,7 +376,7 @@ function checkForErrors(submission){
 //function for what to do on search submission
 function clickSearch(){
     event.preventDefault();
-    submission = {
+    let temp = {
         "address": $('#address').val(),
         "city": $('#city').val(),
         "state": $('#state').val(),
@@ -422,6 +388,7 @@ function clickSearch(){
         "maxClimb": $('#max-climb').val(),
         "minClimb": $('#min-climb').val()
     };
+    submission = {...submission,...temp}
     $('#error').addClass('hidden');
     $('#info-screen').addClass('hidden');
     $('#results').addClass('hidden');
@@ -447,18 +414,18 @@ $('#main-form').on('click', '#new-search', clickNewSearch);
 function watchMain(){
 $('#main-form').on('click','#select-address', function(Event) {
     Event.preventDefault();
-    const location = 'address';
-    renderSearch(location);
+    submission.location = 'address';
+    renderSearch();
 })
 $('#main-form').on('click','#select-city', function(Event){
     Event.preventDefault();
-    const location = 'city';
-    renderSearch(location);
+    submission.location = 'city';
+    renderSearch();
 })
 $('#main-form').on('click','#select-zip', function(Event){
     Event.preventDefault();
-    const location = 'zip';
-    renderSearch(location);
+    submission.location = 'zip';
+    renderSearch();
 })
 $('#main-form').on('click','#help', function(Event){
     Event.preventDefault();
