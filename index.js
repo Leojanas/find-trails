@@ -298,7 +298,7 @@ function renderSearch(){
         $('#main-form').append(generateOptionalFields());
     }else if(submission.location === 'city'){
         $('#main-form').html(generateCitySearch());
-        $('main-form').append(generateOptionalFields());
+        $('#main-form').append(generateOptionalFields());
     }else if(submission.location === 'zip'){
         $('#main-form').html(generateZipSearch());
         $('#main-form').append(generateOptionalFields());
